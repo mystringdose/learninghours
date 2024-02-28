@@ -6,61 +6,28 @@ if (process.env.NODE_ENV != "production"){
 // import dependencies
 const express = require('express')
 const db = require('./config/db')
-const Course = require('./models/course')
+const courseController = require('./controllers/courseController')
+const cors = require('cors')
 
 //create express app
 const app = express()
 
-//configure express app to handle json requests
+//configure express app to handle json requests, cors
 app.use(express.json())
+app.use(cors())
 //connect to database
 db()
 
 //api routes
-app.get("/", (req,res) =>{
-    res.json({hello: "world"})
-})
-app.post("/courses", async (req, res) =>{
-    const title = req.body.title 
-    const description = req.body.description
-    const hours_done = req.body.hours_done
-    const total_hours = req.body.total_hours
-
-    const course = await Course.create({title, description, hours_done, total_hours})
-
-    res.json({course: course})
-})
-
+app.post("/courses", courseController.createCourses)
 //route to get all courses
-app.get("/courses", async (req, res) =>{
-    const courses = await Course.find()
-    res.json({courses: courses})
-})
-
+app.get("/courses", courseController.fetchCourses)
 // route to get one course by id
-app.get("/courses/:id", async (req, res) =>{
-    const course = await Course.findById(req.params.id)
-    res.json({course: course})
-}) 
-
+app.get("/courses/:id",courseController.fetchCourse ) 
 // route to update a course by id
-app.put("/courses/:id", async (req, res) =>{
-
-    // update course by id in the db
-    await Course.findByIdAndUpdate(req.params.id, req.body)
-
-    // fetch and store update course
-    const course = await Course.findById(req.params.id)
-
-
-    res.json({course: course})
-})
-
+app.put("/courses/:id", courseController.updateCourse)
 // route to delete a course by id
-app.delete("/courses/:id", async (req, res) =>{
-    await Course.findByIdAndDelete(req.params.id)
-    res.json({message: "Course deleted"})
-})
+app.delete("/courses/:id", courseController.deleteCourse)
 
 //listening port
 app.listen(process.env.PORT)
