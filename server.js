@@ -5,8 +5,13 @@ if (process.env.NODE_ENV != "production"){
 
 // import dependencies
 const express = require('express')
+const db = require('./config/db')
 
+//create express app
 const app = express()
+
+//connect to database
+db()
 
 //api routes
 app.get("/", (req,res) =>{
