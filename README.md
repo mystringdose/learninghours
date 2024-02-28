@@ -1,2 +1,2 @@
 # learninghours
-Application for tracking how many hour employees have invested into doing professional courses
+Application for tracking how many hours employees have invested into doing professional courses
